@@ -1,4 +1,4 @@
-package net.defekt.racuszki.quadbuilder;
+package net.defekt.racuszki.quadbuilder.mirror;
 
 import org.bukkit.util.Vector;
 

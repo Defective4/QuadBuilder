@@ -1,6 +1,9 @@
 package net.defekt.racuszki.quadbuilder;
 
 import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
+import net.defekt.racuszki.quadbuilder.clones.ClonesUtil;
+import net.defekt.racuszki.quadbuilder.mirror.MirrorAxis;
+import net.defekt.racuszki.quadbuilder.mirror.MirrorSession;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -92,7 +95,7 @@ public class BuildListener implements Listener {
     }
 
     private void handChanged(Player player, ItemStack item, MirrorSession ses) {
-        ShadowUtil util = plugin.getShadowUtil();
+        ClonesUtil util = plugin.getShadowUtil();
         int npc = ses.getNpc();
         switch (npc) {
             case 2:
@@ -134,7 +137,7 @@ public class BuildListener implements Listener {
         Player player = e.getPlayer();
         MirrorSession ses = plugin.getSessions().get(player.getUniqueId());
         if (ses != null) {
-            ShadowUtil util = plugin.getShadowUtil();
+            ClonesUtil util = plugin.getShadowUtil();
             MirrorAxis axis = ses.getAxis();
             Vector center = ses.getCenter();
             Location loc = player.getLocation();

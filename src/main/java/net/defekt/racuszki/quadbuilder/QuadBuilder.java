@@ -1,5 +1,8 @@
 package net.defekt.racuszki.quadbuilder;
 
+import net.defekt.racuszki.quadbuilder.clones.ClonesUtil;
+import net.defekt.racuszki.quadbuilder.mirror.MirrorAxis;
+import net.defekt.racuszki.quadbuilder.mirror.MirrorSession;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -18,7 +21,7 @@ public class QuadBuilder extends JavaPlugin {
     private static QuadBuilder instance;
 
     private final Map<UUID, MirrorSession> sessions = new HashMap<>();
-    private ShadowUtil shadowUtil;
+    private ClonesUtil clonesUtil;
 
     public static QuadBuilder getInstance() {
         return instance;
@@ -28,14 +31,14 @@ public class QuadBuilder extends JavaPlugin {
         return sessions;
     }
 
-    public ShadowUtil getShadowUtil() {
-        return shadowUtil;
+    public ClonesUtil getShadowUtil() {
+        return clonesUtil;
     }
 
     @Override
     public void onEnable() {
         instance = this;
-        shadowUtil = new ShadowUtil();
+        clonesUtil = new ClonesUtil();
         getCommand("mirror").setExecutor((sender, a, b, args) -> {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(RED + "Tej komendy może użyć tylko gracz!");
@@ -53,9 +56,9 @@ public class QuadBuilder extends JavaPlugin {
                     sessions.put(player.getUniqueId(), new MirrorSession(axis, new Vector(x, 0, z)));
                     player.sendMessage(GREEN + "Włączono lustro!");
                     Location loc = new Location(player.getWorld(), x, 0, z);
-                    shadowUtil.spawnPlayer(player, loc, -1);
-                    shadowUtil.spawnPlayer(player, loc, -2);
-                    shadowUtil.spawnPlayer(player, loc, -3);
+                    clonesUtil.spawnPlayer(player, loc, -1);
+                    clonesUtil.spawnPlayer(player, loc, -2);
+                    clonesUtil.spawnPlayer(player, loc, -3);
                 } catch (Exception e) {
                     e.printStackTrace();
                     player.sendMessage(RED + e.toString());

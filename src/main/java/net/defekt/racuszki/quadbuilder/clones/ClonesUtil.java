@@ -1,4 +1,4 @@
-package net.defekt.racuszki.quadbuilder;
+package net.defekt.racuszki.quadbuilder.clones;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -8,6 +8,7 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
+import net.defekt.racuszki.quadbuilder.QuadBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -16,10 +17,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collections;
 import java.util.UUID;
 
-public class ShadowUtil {
+public class ClonesUtil {
     private final ProtocolManager protocol;
 
-    public ShadowUtil() {
+    public ClonesUtil() {
         protocol = ProtocolLibrary.getProtocolManager();
     }
 
