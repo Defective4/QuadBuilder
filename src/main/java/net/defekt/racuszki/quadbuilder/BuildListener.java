@@ -84,7 +84,7 @@ public class BuildListener implements Listener {
                 plugin.getShadowUtil().animate(player, -2);
             }
 
-            if (axis == MirrorAxis.HORIZONTAL) {
+            if (axis == MirrorAxis.HORIZONTAL || axis == MirrorAxis.DIAGONAL) {
                 BlockData clone = block.clone();
                 clone.rotate(StructureRotation.CLOCKWISE_180);
                 new Location(world, mx, y, mz).getBlock().setBlockData(clone);
@@ -182,7 +182,7 @@ public class BuildListener implements Listener {
                 else newBitMask |= c2;
             } else target2 = loc;
 
-            if (axis == MirrorAxis.HORIZONTAL) {
+            if (axis == MirrorAxis.HORIZONTAL || axis == MirrorAxis.DIAGONAL) {
                 target3 = new Location(world, mx, y, mz, toAngle(yaw), pitch);
                 util.movePlayer(player, target3, -3);
                 boolean tooClose = target3.distance(loc) <= 1;
