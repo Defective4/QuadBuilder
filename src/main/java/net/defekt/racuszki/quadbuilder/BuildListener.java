@@ -156,15 +156,56 @@ public class BuildListener implements Listener {
             mx = mirror(center.getX(), loc.getX());
             mz = mirror(center.getZ(), loc.getZ());
 
+            Location target1, target2, target3;
+
+            byte currentBitMask = ses.getVisibleNPCs();
+            byte newBitMask = currentBitMask;
+
+            byte c1, c2, c3, ic1, ic2, ic3;
+            c1 = 0b100;
+            c2 = 0b010;
+            c3 = 0b001;
+
             if (axis == MirrorAxis.Z || axis == MirrorAxis.HORIZONTAL) {
-                util.movePlayer(player, new Location(world, x, y, mz, -toAngle(yaw), pitch), -1);
-            }
+                target1 = new Location(world, x, y, mz, -toAngle(yaw), pitch);
+                util.movePlayer(player, target1, -1);
+                boolean tooClose = target1.distance(loc) <= 1;
+                if (tooClose) newBitMask &= (byte) (~c1 & 0b111);
+                else newBitMask |= c1;
+            } else target1 = loc;
+
             if (axis == MirrorAxis.X || axis == MirrorAxis.HORIZONTAL) {
-                util.movePlayer(player, new Location(world, mx, y, z, -toAngle(yaw - 180), pitch), -2);
-            }
+                target2 = new Location(world, mx, y, z, -toAngle(yaw - 180), pitch);
+                util.movePlayer(player, target2, -2);
+                boolean tooClose = target2.distance(loc) <= 1;
+                if (tooClose) newBitMask &= (byte) (~c2 & 0b111);
+                else newBitMask |= c2;
+            } else target2 = loc;
+
             if (axis == MirrorAxis.HORIZONTAL) {
-                util.movePlayer(player, new Location(world, mx, y, mz, toAngle(yaw), pitch), -3);
+                target3 = new Location(world, mx, y, mz, toAngle(yaw), pitch);
+                util.movePlayer(player, target3, -3);
+                boolean tooClose = target3.distance(loc) <= 1;
+                if (tooClose) newBitMask &= (byte) (~c3 & 0b111);
+                else newBitMask |= c3;
+            } else target3 = loc;
+
+            if (newBitMask != currentBitMask) {
+                if ((newBitMask & c1) != (currentBitMask & c1)) {
+                    if ((newBitMask & c1) > 0) util.spawnPlayer(player, target1, -1);
+                    else util.hidePlayer(player, -1);
+                }
+                if ((newBitMask & c2) != (currentBitMask & c2)) {
+                    if ((newBitMask & c2) > 0) util.spawnPlayer(player, target2, -2);
+                    else util.hidePlayer(player, -2);
+                }
+                if ((newBitMask & c3) != (currentBitMask & c3)) {
+                    if ((newBitMask & c3) > 0) util.spawnPlayer(player, target3, -3);
+                    else util.hidePlayer(player, -3);
+                }
             }
+
+            ses.setVisibleNPCs(newBitMask);
         }
     }
 

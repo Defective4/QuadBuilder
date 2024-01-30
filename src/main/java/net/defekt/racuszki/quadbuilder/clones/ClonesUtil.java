@@ -34,9 +34,7 @@ public class ClonesUtil {
         PacketContainer packet = protocol.createPacket(PacketType.Play.Server.ENTITY_EQUIPMENT);
         packet.getIntegers().write(0, id);
         packet.getSlotStackPairLists()
-              .write(0,
-                     Collections.singletonList(new Pair<>(EnumWrappers.ItemSlot.MAINHAND,
-                                                          item)));
+              .write(0, Collections.singletonList(new Pair<>(EnumWrappers.ItemSlot.MAINHAND, item)));
         protocol.sendServerPacket(player, packet);
     }
 
@@ -53,6 +51,12 @@ public class ClonesUtil {
         headPacket.getBytes().write(0, (byte) loc.getYaw());
 
         protocol.sendServerPacket(player, headPacket);
+    }
+
+    public void hidePlayer(Player player, int id) {
+        PacketContainer packet = protocol.createPacket(PacketType.Play.Server.ENTITY_DESTROY);
+        packet.getIntLists().write(0, Collections.singletonList(id));
+        protocol.sendServerPacket(player, packet);
     }
 
     public void spawnPlayer(Player player, Location loc, int id) {
@@ -82,5 +86,7 @@ public class ClonesUtil {
               .scheduleSyncDelayedTask(QuadBuilder.getInstance(),
                                        () -> protocol.sendServerPacket(player, removePacket),
                                        20);
+
+        setHand(player, id, player.getInventory().getItemInMainHand());
     }
 }
