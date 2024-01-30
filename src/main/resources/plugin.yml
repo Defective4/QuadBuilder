@@ -1,0 +1,9 @@
+name: QuadBuilder
+version: ${project.version}
+main: net.defekt.racuszki.quadbuilder.QuadBuilder
+author: Defective4
+api-version: 1.13
+depend: [ ProtocolLib ]
+commands:
+  mirror:
+    permission: quadbuilder.mirror

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>net.defekt.racuszki</groupId>
+    <artifactId>QuadBuilder</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>libs</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.19.4</version>
+            <scope>system</scope>
+            <systemPath>/shared/pliki/Pliki/Minecraft/Serwery/_Pluginy itp_/api/paper-1.19.4-api.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>libs</groupId>
+            <artifactId>protocollib</artifactId>
+            <version>any</version>
+            <scope>system</scope>
+            <systemPath>/shared/pliki/Pliki/Minecraft/Serwery/Racuszki/Testowy/plugins/ProtocolLib.jar</systemPath>
+        </dependency>
+    </dependencies>
+
+</project>
