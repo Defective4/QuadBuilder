@@ -16,9 +16,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -37,6 +36,26 @@ public class BuildListener implements Listener {
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
         mirrorBlock(e.getPlayer(), e.getBlock().getLocation(), Material.AIR.createBlockData());
+    }
+
+    @EventHandler
+    public void onBucketEmpty(PlayerBucketEmptyEvent e) {
+        Bukkit.getScheduler()
+              .scheduleSyncDelayedTask(plugin,
+                                       () -> mirrorBlock(e.getPlayer(),
+                                                         e.getBlock().getLocation(),
+                                                         e.getBlock().getBlockData()),
+                                       1);
+    }
+
+    @EventHandler
+    public void onBucketFill(PlayerBucketFillEvent e) {
+        Bukkit.getScheduler()
+              .scheduleSyncDelayedTask(plugin,
+                                       () -> mirrorBlock(e.getPlayer(),
+                                                         e.getBlock().getLocation(),
+                                                         e.getBlock().getBlockData()),
+                                       1);
     }
 
     @EventHandler
@@ -71,24 +90,30 @@ public class BuildListener implements Listener {
             mz = mirror(cz, z);
 
             if (axis == MirrorAxis.X || axis == MirrorAxis.HORIZONTAL) {
-                BlockData clone = block.clone();
-                clone.mirror(Mirror.LEFT_RIGHT);
-                new Location(world, x, y, mz).getBlock().setBlockData(clone);
+                if (block != null) {
+                    BlockData clone = block.clone();
+                    clone.mirror(Mirror.LEFT_RIGHT);
+                    new Location(world, x, y, mz).getBlock().setBlockData(clone);
+                }
                 plugin.getShadowUtil().animate(player, -1);
             }
 
             if (axis == MirrorAxis.Z || axis == MirrorAxis.HORIZONTAL) {
-                BlockData clone = block.clone();
-                clone.mirror(Mirror.FRONT_BACK);
-                new Location(world, mx, y, z).getBlock().setBlockData(clone);
-                plugin.getShadowUtil().animate(player, -2);
+                if (block != null) {
+                    BlockData clone = block.clone();
+                    clone.mirror(Mirror.FRONT_BACK);
+                    new Location(world, mx, y, z).getBlock().setBlockData(clone);
+                    plugin.getShadowUtil().animate(player, -2);
+                }
             }
 
             if (axis == MirrorAxis.HORIZONTAL || axis == MirrorAxis.DIAGONAL) {
-                BlockData clone = block.clone();
-                clone.rotate(StructureRotation.CLOCKWISE_180);
-                new Location(world, mx, y, mz).getBlock().setBlockData(clone);
-                plugin.getShadowUtil().animate(player, -3);
+                if (block != null) {
+                    BlockData clone = block.clone();
+                    clone.rotate(StructureRotation.CLOCKWISE_180);
+                    new Location(world, mx, y, mz).getBlock().setBlockData(clone);
+                    plugin.getShadowUtil().animate(player, -3);
+                }
             }
 
         }
@@ -130,6 +155,11 @@ public class BuildListener implements Listener {
         if (ses != null) {
             if (e.getSlot() == player.getInventory().getHeldItemSlot()) handChanged(player, e.getNewItemStack(), ses);
         }
+    }
+
+    @EventHandler
+    public void onSignEdit(SignChangeEvent e) {
+        mirrorBlock(e.getPlayer(), e.getBlock().getLocation(), e.getBlock().getBlockData());
     }
 
     @EventHandler
