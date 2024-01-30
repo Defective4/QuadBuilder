@@ -4,10 +4,8 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.EnumWrappers;
-import com.comphenix.protocol.wrappers.Pair;
-import com.comphenix.protocol.wrappers.PlayerInfoData;
-import com.comphenix.protocol.wrappers.WrappedGameProfile;
+import com.comphenix.protocol.wrappers.*;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import net.defekt.racuszki.quadbuilder.QuadBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -64,9 +62,17 @@ public class ClonesUtil {
         packet.getPlayerInfoActions().write(0, Collections.singleton(EnumWrappers.PlayerInfoAction.ADD_PLAYER));
 
         UUID uid = UUID.randomUUID();
+
+        WrappedGameProfile profile = new WrappedGameProfile(uid, player.getName());
+
+        for (ProfileProperty prop : player.getPlayerProfile().getProperties())
+            profile.getProperties()
+                   .put(prop.getName(),
+                        WrappedSignedProperty.fromValues(prop.getName(), prop.getValue(), prop.getSignature()));
+
         packet.getPlayerInfoDataLists()
               .write(1,
-                     Collections.singletonList(new PlayerInfoData(new WrappedGameProfile(uid, player.getName()),
+                     Collections.singletonList(new PlayerInfoData(profile,
                                                                   0,
                                                                   EnumWrappers.NativeGameMode.CREATIVE,
                                                                   null)));
@@ -79,13 +85,23 @@ public class ClonesUtil {
 
         protocol.sendServerPacket(player, packet);
 
+        PacketContainer metaPacket = protocol.createPacket(PacketType.Play.Server.ENTITY_METADATA);
+        metaPacket.getIntegers().write(0, id);
+        metaPacket.getDataValueCollectionModifier()
+                  .write(0,
+                         Collections.singletonList(new WrappedDataValue(17,
+                                                                        WrappedDataWatcher.Registry.get(Byte.class),
+                                                                        (byte) 127)));
+
+        protocol.sendServerPacket(player, packet);
+
         PacketContainer removePacket = protocol.createPacket(PacketType.Play.Server.PLAYER_INFO_REMOVE);
         removePacket.getUUIDLists().write(0, Collections.singletonList(uid));
 
-        Bukkit.getScheduler()
-              .scheduleSyncDelayedTask(QuadBuilder.getInstance(),
-                                       () -> protocol.sendServerPacket(player, removePacket),
-                                       20);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(QuadBuilder.getInstance(), () -> {
+            protocol.sendServerPacket(player, removePacket);
+            protocol.sendServerPacket(player, metaPacket);
+        }, 20);
 
         setHand(player, id, player.getInventory().getItemInMainHand());
     }

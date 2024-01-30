@@ -90,16 +90,16 @@ public class BuildListener implements Listener {
             mz = mirror(cz, z);
 
             if (axis == MirrorAxis.X || axis == MirrorAxis.HORIZONTAL) {
-                if (block != null) {
+                if (block != null && mz != z) {
                     BlockData clone = block.clone();
                     clone.mirror(Mirror.LEFT_RIGHT);
                     new Location(world, x, y, mz).getBlock().setBlockData(clone);
+                    plugin.getShadowUtil().animate(player, -1);
                 }
-                plugin.getShadowUtil().animate(player, -1);
             }
 
             if (axis == MirrorAxis.Z || axis == MirrorAxis.HORIZONTAL) {
-                if (block != null) {
+                if (block != null && mx != x) {
                     BlockData clone = block.clone();
                     clone.mirror(Mirror.FRONT_BACK);
                     new Location(world, mx, y, z).getBlock().setBlockData(clone);
@@ -108,7 +108,7 @@ public class BuildListener implements Listener {
             }
 
             if (axis == MirrorAxis.HORIZONTAL || axis == MirrorAxis.DIAGONAL) {
-                if (block != null) {
+                if (block != null && mx != x && mz != z) {
                     BlockData clone = block.clone();
                     clone.rotate(StructureRotation.CLOCKWISE_180);
                     new Location(world, mx, y, mz).getBlock().setBlockData(clone);
